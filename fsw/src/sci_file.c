@@ -31,38 +31,22 @@
 static SCI_FILE_Class_t*  SciFile = NULL;
 
 
-/* 
-** String lookup tables for SCI_FILE_State
-*/
-
-static char* SciStateStr[] =
-{
-   
-   "UNDEFINED",  /* 0: Invalid state     */ 
-   "OFF",        /* 1: SCI_FILE_OFF      */
-   "STARTING",   /* 2: SCI_FILE_STARTING */
-   "STOPPING",   /* 3: SCI_FILE_STOPPING */
-   "ON"          /* 4: SCI_FILE_ON       */
-
-};
-
-
 /*******************************/
 /** Local Function Prototypes **/
 /*******************************/
 
-static void    InitFileState(void);
-static boolean CreateFile(uint16 ImageId);
-static void    CloseFile(void);
-static boolean WriteDetectorRow(PL_SIM_LIB_DetectorRow_t *DetectorRow);
-static void    CreateCntFilename(uint16 ImageId);
+static void InitFileState(void);
+static void CreateCntFilename(uint16 ImageId);
+static bool CreateFile(uint16 ImageId);
+static void CloseFile(void);
+static bool WriteDetectorRow(PL_SIM_LIB_DetectorRow_t *DetectorRow);
 
 
 /******************************************************************************
 ** Function: SCI_FILE_Constructor
 **
 */
-void SCI_FILE_Constructor(SCI_FILE_Class_t *SciFilePtr, INITBL_Class *IniTbl)
+void SCI_FILE_Constructor(SCI_FILE_Class_t *SciFilePtr, INITBL_Class_t *IniTbl)
 {
  
    SciFile = SciFilePtr;
@@ -79,7 +63,7 @@ void SCI_FILE_Constructor(SCI_FILE_Class_t *SciFilePtr, INITBL_Class *IniTbl)
            INITBL_GetStrConfig(IniTbl, CFG_SCI_FILE_EXTENSION),
            SCI_FILE_EXT_MAX_CHAR);
 
-   /* Initialize to a known state. Call after config parameters in case they're used*/
+   /* Initialize to a known state. Call after config parameters in case they're used */
    InitFileState();
 
 } /* End SCI_FILE_Constructor() */
@@ -109,19 +93,21 @@ void SCI_FILE_ResetStatus(void)
 **           rest of filename and extension.
 **
 */
-boolean SCI_FILE_ConfigCmd(void* DataObjPtr, const CFE_SB_MsgPtr_t MsgPtr)
+bool SCI_FILE_ConfigCmd(void* DataObjPtr, const CFE_SB_Buffer_t* SbBufPtr)
 {
 
-   const SCI_FILE_ConfigCmdMsg_t *ConfigCmd = (SCI_FILE_ConfigCmdMsg_t *)MsgPtr;
+   const  SCI_FILE_Config_t *ConfigCmd = CMDMGR_PAYLOAD_PTR(SbBufPtr, SCI_FILE_ConfigCmdMsg_t);
    
-   SciFile->Config.ImagesPerFile = ConfigCmd->Config.ImagesPerFile;
+   SciFile->Config.ImagesPerFile = ConfigCmd->ImagesPerFile;
    
-   strncpy(SciFile->Config.PathBaseFilename, ConfigCmd->Config.PathBaseFilename, OS_MAX_PATH_LEN);
+   strncpy(SciFile->Config.PathBaseFilename, ConfigCmd->PathBaseFilename, OS_MAX_PATH_LEN);
    SciFile->Config.PathBaseFilename[OS_MAX_PATH_LEN-1] = '\0';
    
-   strncpy(SciFile->Config.FileExtension, ConfigCmd->Config.FileExtension, SCI_FILE_EXT_MAX_CHAR);
+   strncpy(SciFile->Config.FileExtension, ConfigCmd->FileExtension, SCI_FILE_EXT_MAX_CHAR);
    SciFile->Config.FileExtension[SCI_FILE_EXT_MAX_CHAR-1] = '\0';
 
+   return true;
+   
 } /* End SCI_FILE_ConfigCmd() */
 
 
@@ -135,13 +121,13 @@ boolean SCI_FILE_ConfigCmd(void* DataObjPtr, const CFE_SB_MsgPtr_t MsgPtr)
 **      detector image synchronization.
 **
 */
-boolean SCI_FILE_Start(void)
+bool SCI_FILE_Start(void)
 {
    
    SciFile->State = SCI_FILE_ENABLED;
-   SciFile->CreateNewFile = TRUE;
+   SciFile->CreateNewFile = true;
    
-   return TRUE;
+   return true;
 
 } /* End SciFile_Start() */
 
@@ -157,7 +143,7 @@ boolean SCI_FILE_Start(void)
 **      generating errors.
 **
 */
-boolean SCI_FILE_Stop(char *EventStr, uint16 MaxStrLen)
+bool SCI_FILE_Stop(char *EventStr, uint16 MaxStrLen)
 {
   
    if (SciFile->State == SCI_FILE_DISABLED)
@@ -176,7 +162,7 @@ boolean SCI_FILE_Stop(char *EventStr, uint16 MaxStrLen)
       
    InitFileState();
          
-   return TRUE;
+   return true;
    
 } /* End SciFile_Stop() */
 
@@ -212,7 +198,7 @@ void SCI_FILE_WriteDetectorData(PL_SIM_LIB_Detector_t *Detector, SCI_FILE_Contro
          if (SciFile->CreateNewFile)
          {
             CreateFile(Detector->ImageCnt);
-            SciFile->CreateNewFile = FALSE;
+            SciFile->CreateNewFile = false;
          }
 
          WriteDetectorRow(&Detector->Row);         
@@ -223,7 +209,7 @@ void SCI_FILE_WriteDetectorData(PL_SIM_LIB_Detector_t *Detector, SCI_FILE_Contro
             if (SciFile->ImageCnt >= SciFile->Config.ImagesPerFile)
             {
                CloseFile();
-               SciFile->CreateNewFile = TRUE;
+               SciFile->CreateNewFile = true;
             }
             
          } /* End if SCI_FILE_SAVE_LAST_ROW */
@@ -244,10 +230,10 @@ void SCI_FILE_WriteDetectorData(PL_SIM_LIB_Detector_t *Detector, SCI_FILE_Contro
 static void InitFileState(void)
 {
    
-   SciFile->CreateNewFile = FALSE;
+   SciFile->CreateNewFile = false;
    SciFile->State    = SCI_FILE_DISABLED;
    SciFile->Handle   = 0;
-   SciFile->IsOpen   = FALSE;
+   SciFile->IsOpen   = false;
    SciFile->ImageCnt = 0;
    strcpy(SciFile->Name, SCI_FILE_UNDEF_FILE);
    
@@ -262,15 +248,17 @@ static void InitFileState(void)
 ** Notes:
 **   None
 */
-static boolean CreateFile(uint16 ImageId)
+static bool CreateFile(uint16 ImageId)
 {
 
-   boolean RetStatus = FALSE;
+   bool          RetStatus = false;
+   int32         SysStatus;
+   os_err_name_t OsErrStr; 
    
    if (SciFile->IsOpen)
    {
       
-      CFE_EVS_SendEvent (SCI_FILE_CREATE_ERR_EID, CFE_EVS_ERROR, 
+      CFE_EVS_SendEvent (SCI_FILE_CREATE_ERR_EID, CFE_EVS_EventType_ERROR, 
                          "Create science file failed due to a file already being open: %s", SciFile->Name);         
    
    }
@@ -279,24 +267,25 @@ static boolean CreateFile(uint16 ImageId)
    
       CreateCntFilename(ImageId);
       
-      SciFile->Handle = OS_creat(SciFile->Name, OS_WRITE_ONLY);
+      SysStatus = OS_OpenCreate(&SciFile->Handle, SciFile->Name, OS_FILE_FLAG_CREATE | OS_FILE_FLAG_TRUNCATE, OS_READ_WRITE);
       
-      if (SciFile->Handle >= OS_FS_SUCCESS)
+      if (SysStatus == OS_SUCCESS)
       {
       
-         RetStatus = TRUE;
+         RetStatus = true;
          SciFile->ImageCnt = 0;
-         SciFile->IsOpen = TRUE;
-         CFE_EVS_SendEvent (SCI_FILE_CREATE_EID, CFE_EVS_INFORMATION, 
+         SciFile->IsOpen = true;
+         CFE_EVS_SendEvent (SCI_FILE_CREATE_EID, CFE_EVS_EventType_INFORMATION, 
                             "New science file created: %s",SciFile->Name);         
 
       }
       else
       {
          
-         CFE_EVS_SendEvent (SCI_FILE_CREATE_ERR_EID, CFE_EVS_ERROR, 
-                            "Error creating new science file %s. Return status = 0x%4X",
-                            SciFile->Name, SciFile->Handle);         
+         OS_GetErrorName(SysStatus, &OsErrStr);
+         CFE_EVS_SendEvent (SCI_FILE_CREATE_ERR_EID, CFE_EVS_EventType_ERROR, 
+                            "Error creating new science file %s. Return status %s",
+                            SciFile->Name, OsErrStr);         
       
       }
    } /* End if no file currently open */
@@ -322,10 +311,10 @@ static void CloseFile(void)
       
       OS_close(SciFile->Handle);
       
-      CFE_EVS_SendEvent (SCI_FILE_CLOSE_EID, CFE_EVS_INFORMATION, 
+      CFE_EVS_SendEvent (SCI_FILE_CLOSE_EID, CFE_EVS_EventType_INFORMATION, 
                          "Closed science file %s",SciFile->Name);         
       
-      SciFile->IsOpen = FALSE;
+      SciFile->IsOpen = false;
       strcpy(SciFile->Name, SCI_FILE_UNDEF_FILE);
 
    }
@@ -363,74 +352,6 @@ static void CreateCntFilename(uint16 ImageId)
 
 
 /******************************************************************************
-** Functions: CreateTimeFilename
-**
-** Create a filename using the config-defined base path/filename, current time,
-** and the config-defined extension. 
-**
-** Notes:
-**   1. No string buffer error checking performed
-*/
-
-/*
-** cFE time string has format: "YYYY-DDD-HH:MM:SS.sssss"...
-*/
-#define CFE_YYYY_INDEX  0
-#define CFE_DDD_INDEX   5
-#define CFE_HH_INDEX    9
-#define CFE_MM_INDEX   12
-#define CFE_SS_INDEX   15
-#define CFE_ssss_INDEX 18
-
-/*
-** SCI_FILE time string has format: "YYYYDDDHHMMSS"...
-*/
-#define SCI_FILE_YYYY_OFFSET  0
-#define SCI_FILE_DDD_OFFSET   4
-#define SCI_FILE_HH_OFFSET    7
-#define SCI_FILE_MM_OFFSET    9
-#define SCI_FILE_SS_OFFSET   11
-#define SCI_FILE_TERM_OFFSET 13
-
-static void CreateTimeFilename(char* Filename)
-{
-
-   uint16  i;
-   char    TimeStr[64];
-   CFE_TIME_SysTime_t SysTime;
-
-   strcpy (Filename, SciFile->Config.PathBaseFilename);
-   
-   i = strlen(Filename);  /* Starting position for the time stamp */
-   
-   SysTime = CFE_TIME_GetTime();
-   CFE_TIME_Print(TimeStr, SysTime);
-
-   Filename[i + SCI_FILE_YYYY_OFFSET]     = TimeStr[CFE_YYYY_INDEX];
-   Filename[i + SCI_FILE_YYYY_OFFSET + 1] = TimeStr[CFE_YYYY_INDEX + 1];
-   Filename[i + SCI_FILE_YYYY_OFFSET + 2] = TimeStr[CFE_YYYY_INDEX + 2];
-   Filename[i + SCI_FILE_YYYY_OFFSET + 3] = TimeStr[CFE_YYYY_INDEX + 3];
-
-   Filename[i + SCI_FILE_DDD_OFFSET]      = TimeStr[CFE_DDD_INDEX];
-   Filename[i + SCI_FILE_DDD_OFFSET + 1]  = TimeStr[CFE_DDD_INDEX + 1];
-   Filename[i + SCI_FILE_DDD_OFFSET + 2]  = TimeStr[CFE_DDD_INDEX + 2];
-
-   Filename[i + SCI_FILE_HH_OFFSET]       = TimeStr[CFE_HH_INDEX];
-   Filename[i + SCI_FILE_HH_OFFSET + 1]   = TimeStr[CFE_HH_INDEX + 1];
-
-   Filename[i + SCI_FILE_MM_OFFSET]       = TimeStr[CFE_MM_INDEX];
-   Filename[i + SCI_FILE_MM_OFFSET + 1]   = TimeStr[CFE_MM_INDEX + 1];
-
-   Filename[i + SCI_FILE_SS_OFFSET]       = TimeStr[CFE_SS_INDEX];
-   Filename[i + SCI_FILE_SS_OFFSET + 1]   = TimeStr[CFE_SS_INDEX + 1];
-
-   i += SCI_FILE_TERM_OFFSET;
-      
-   strcat (&Filename[i], SciFile->Config.FileExtension);
-
-} /* End CreateTimeFilename() */
-
-/******************************************************************************
 ** Functions: WriteDetectorRow
 **
 ** Write a detector row to the current science file
@@ -438,11 +359,11 @@ static void CreateTimeFilename(char* Filename)
 ** Notes:
 **   None
 */
-static boolean WriteDetectorRow(PL_SIM_LIB_DetectorRow_t *DetectorRow)
+static bool WriteDetectorRow(PL_SIM_LIB_DetectorRow_t *DetectorRow)
 {
    
-   int32   WriteStatus = 0;
-   boolean RetStatus = FALSE;
+   int32 WriteStatus = 0;
+   bool  RetStatus = false;
    
    if (SciFile->IsOpen)
    {
@@ -453,10 +374,10 @@ static boolean WriteDetectorRow(PL_SIM_LIB_DetectorRow_t *DetectorRow)
         
    } /* End file open */
 
-   if (RetStatus == FALSE)
+   if (RetStatus == false)
    {
    
-      CFE_EVS_SendEvent (SCI_FILE_WRITE_ERR_EID, CFE_EVS_ERROR, 
+      CFE_EVS_SendEvent (SCI_FILE_WRITE_ERR_EID, CFE_EVS_EventType_ERROR, 
                          "Error writing to science file %s. IsOpen=%d, WriteStatus=%d",
                          SciFile->Name, SciFile->IsOpen, WriteStatus);
 

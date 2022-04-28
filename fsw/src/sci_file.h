@@ -85,12 +85,13 @@ typedef struct
 
 typedef struct
 {
-   uint8  CmdHeader[CFE_SB_CMD_HDR_SIZE];
+
+   CFE_MSG_CommandHeader_t CmdHeader;
    
-   SCI_FILE_Config_t  Config;
+   SCI_FILE_Config_t  Payload;
 
 } SCI_FILE_ConfigCmdMsg_t;
-#define SCI_FILE_CONFIG_CMD_DATA_LEN  (sizeof(SCI_FILE_ConfigCmdMsg_t) - CFE_SB_CMD_HDR_SIZE)
+#define SCI_FILE_CONFIG_CMD_DATA_LEN  (sizeof(SCI_FILE_ConfigCmdMsg_t) - sizeof(CFE_MSG_CommandHeader_t))
 
 
 /******************************************************************************
@@ -106,9 +107,9 @@ typedef struct
 typedef struct
 {
 
-   boolean           CreateNewFile;
-   int32             Handle;
-   boolean           IsOpen;
+   bool              CreateNewFile;
+   uint32            Handle;
+   bool              IsOpen;
    SCI_FILE_State_t  State;
    uint16            ImageCnt;
    char Name[OS_MAX_PATH_LEN];
@@ -133,7 +134,7 @@ typedef struct
 **      registered with the table manager.
 **
 */
-void SCI_FILE_Constructor(SCI_FILE_Class_t *SciFilePtr, INITBL_Class *IniTbl);
+void SCI_FILE_Constructor(SCI_FILE_Class_t *SciFilePtr, INITBL_Class_t *IniTbl);
 
 
 /******************************************************************************
@@ -167,7 +168,7 @@ void SCI_FILE_WriteDetectorData(PL_SIM_LIB_Detector_t *Detector, SCI_FILE_Contro
 **  1. This function must comply with the CMDMGR_CmdFuncPtr definition
 **
 */
-boolean SCI_FILE_ConfigCmd(void* DataObjPtr, const CFE_SB_MsgPtr_t MsgPtr);
+bool SCI_FILE_ConfigCmd(void* DataObjPtr, const CFE_SB_Buffer_t* SbBufPtr);
 
 
 /******************************************************************************
@@ -179,7 +180,7 @@ boolean SCI_FILE_ConfigCmd(void* DataObjPtr, const CFE_SB_MsgPtr_t MsgPtr);
 **   None
 **
 */
-boolean SCI_FILE_Start(void);
+bool SCI_FILE_Start(void);
 
 
 /******************************************************************************
@@ -191,7 +192,7 @@ boolean SCI_FILE_Start(void);
 **   None
 **
 */
-boolean SCI_FILE_Stop(char *EventStr, uint16 MaxStrLen);
+bool SCI_FILE_Stop(char *EventStr, uint16 MaxStrLen);
 
 
 #endif /* _sci_file_ */

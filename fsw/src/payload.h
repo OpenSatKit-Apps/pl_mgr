@@ -102,7 +102,7 @@ typedef struct
 **   1. This must be called prior to any other function.
 **
 */
-void PAYLOAD_Constructor(PAYLOAD_Class_t *PayloadPtr, INITBL_Class *IniTbl);
+void PAYLOAD_Constructor(PAYLOAD_Class_t *PayloadPtr, INITBL_Class_t *IniTbl);
 
 
 /******************************************************************************
@@ -138,7 +138,7 @@ void PAYLOAD_ResetStatus(void);
 **     command with a parameter that would need validation
 **
 */
-boolean PAYLOAD_StartSciCmd(void* DataObjPtr, const CFE_SB_MsgPtr_t MsgPtr);
+bool PAYLOAD_StartSciCmd(void* DataObjPtr, const CFE_SB_Buffer_t* SbBufPtr);
 
 
 /******************************************************************************
@@ -152,7 +152,7 @@ boolean PAYLOAD_StartSciCmd(void* DataObjPtr, const CFE_SB_MsgPtr_t MsgPtr);
 **     command with a parameter that would need validation
 **
 */
-boolean PAYLOAD_StopSciCmd(void* DataObjPtr, const CFE_SB_MsgPtr_t MsgPtr);
+bool PAYLOAD_StopSciCmd(void* DataObjPtr, const CFE_SB_Buffer_t* SbBufPtr);
 
 
 #endif /* _sci_file_ */

@@ -31,7 +31,7 @@
 */
 
 #define PL_MGR_PLATFORM_REV   0
-#define PL_MGR_INI_FILENAME   "/cf/pl_mgr_app_ini.json"
+#define PL_MGR_INI_FILENAME   "/cf/pl_mgr_ini.json"
 
 
 #endif /* _pl_mgr_platform_cfg_ */

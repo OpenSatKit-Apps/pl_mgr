@@ -40,7 +40,7 @@ static PAYLOAD_Class_t *Payload = NULL;
 ** Function: PAYLOAD_Constructor
 **
 */ 
-void PAYLOAD_Constructor(PAYLOAD_Class_t *PayloadPtr, INITBL_Class *IniTbl)
+void PAYLOAD_Constructor(PAYLOAD_Class_t *PayloadPtr, INITBL_Class_t *IniTbl)
 {
  
    Payload = PayloadPtr;
@@ -74,27 +74,27 @@ void PAYLOAD_ResetStatus(void)
 ** Note:
 **  1. This function must comply with the CMDMGR_CmdFuncPtr definition
 */
-boolean PAYLOAD_StartSciCmd (void* DataObjPtr, const CFE_SB_MsgPtr_t MsgPtr)
+bool PAYLOAD_StartSciCmd (void* DataObjPtr, const CFE_SB_Buffer_t* SbBufPtr)
 {
 
-   boolean RetStatus = FALSE;
+   bool RetStatus = false;
    
    if (Payload->CurrPower == PL_SIM_LIB_POWER_READY)
    {
       
-      if (SCI_FILE_Start() == TRUE)
+      if (SCI_FILE_Start() == true)
       {
 
-         CFE_EVS_SendEvent (PAYLOAD_START_SCI_CMD_EID, CFE_EVS_INFORMATION, 
+         CFE_EVS_SendEvent (PAYLOAD_START_SCI_CMD_EID, CFE_EVS_EventType_INFORMATION, 
                             "Start science data collection accepted");
       
-         RetStatus = TRUE;
+         RetStatus = true;
       }
    }  
    else
    { 
    
-      CFE_EVS_SendEvent (PAYLOAD_START_SCI_CMD_ERR_EID, CFE_EVS_ERROR, 
+      CFE_EVS_SendEvent (PAYLOAD_START_SCI_CMD_ERR_EID, CFE_EVS_EventType_ERROR, 
                          "Start science data collection rejected. Payload in %s state and not the READY power state",
                         PL_SIM_LIB_GetPowerStateStr(Payload->CurrPower));
    
@@ -114,16 +114,16 @@ boolean PAYLOAD_StartSciCmd (void* DataObjPtr, const CFE_SB_MsgPtr_t MsgPtr)
 ** Note:
 **  1. This function must comply with the CMDMGR_CmdFuncPtr definition
 */
-boolean PAYLOAD_StopSciCmd(void* DataObjPtr, const CFE_SB_MsgPtr_t MsgPtr)
+bool PAYLOAD_StopSciCmd(void* DataObjPtr, const CFE_SB_Buffer_t* SbBufPtr)
 {
    char EventStr[132];
    
    SCI_FILE_Stop(EventStr, 132);
    
-   CFE_EVS_SendEvent (PAYLOAD_STOP_SCI_CMD_EID, CFE_EVS_INFORMATION, 
+   CFE_EVS_SendEvent (PAYLOAD_STOP_SCI_CMD_EID, CFE_EVS_EventType_INFORMATION, 
                       "%s", EventStr);
                             
-   return TRUE;
+   return true;
 
 } /* End PAYLOAD_StopSciCmd() */
 
@@ -158,7 +158,7 @@ void PAYLOAD_ManageData(void)
       {
          if (Payload->SciFile.State == SCI_FILE_ENABLED)
          {
-            CFE_EVS_SendEvent(PAYLOAD_SHUTDOWN_SCI_EID, CFE_EVS_ERROR, 
+            CFE_EVS_SendEvent(PAYLOAD_SHUTDOWN_SCI_EID, CFE_EVS_EventType_ERROR, 
                               "Terminating science data collection. Payload power transitioned from %s to %s",
                               PL_SIM_LIB_GetPowerStateStr(Payload->PrevPower),
                               PL_SIM_LIB_GetPowerStateStr(Payload->CurrPower));

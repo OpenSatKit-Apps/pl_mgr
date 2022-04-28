@@ -38,10 +38,10 @@
 /** Macro Definitions **/
 /***********************/
 
-#define PL_MGR_INIT_EID              (PL_MGR_BASE_EID + 0)
-#define PL_MGR_EXIT_EID              (PL_MGR_BASE_EID + 1)
-#define PL_MGR_CMD_NOOP_EID          (PL_MGR_BASE_EID + 2)
-#define PL_MGR_CMD_INVALID_MID_EID   (PL_MGR_BASE_EID + 3)
+#define PL_MGR_INIT_EID          (PL_MGR_BASE_EID + 0)
+#define PL_MGR_EXIT_EID          (PL_MGR_BASE_EID + 1)
+#define PL_MGR_NOOP_CMD_EID      (PL_MGR_BASE_EID + 2)
+#define PL_MGR_INVALID_CMD_EID   (PL_MGR_BASE_EID + 3)
 
 /**********************/
 /** Type Definitions **/
@@ -59,7 +59,7 @@
 typedef struct
 {
 
-   uint8    Header[CFE_SB_TLM_HDR_SIZE];
+   CFE_MSG_TelemetryHeader_t TelemetryHeader;
 
    /*
    ** CMDMGR Data
@@ -79,12 +79,11 @@ typedef struct
    ** Science File Data
    */
 
-   boolean  SciFileOpen;
+   bool     SciFileOpen;
    uint8    SciFileImageCnt;   
    char SciFilename[OS_MAX_PATH_LEN];
    
-} OS_PACK PL_MGR_StatusTlm_t;
-#define PL_MGR_APP_STATUS_TLM_LEN sizeof (PL_MGR_StatusTlm_t)
+} PL_MGR_StatusTlm_t;
 
 
 typedef struct
@@ -94,9 +93,9 @@ typedef struct
    ** App Framework
    */ 
    
-   INITBL_Class    IniTbl;
-   CFE_SB_PipeId_t CmdPipe;
-   CMDMGR_Class    CmdMgr;
+   INITBL_Class_t   IniTbl;
+   CFE_SB_PipeId_t  CmdPipe;
+   CMDMGR_Class_t   CmdMgr;
    
    /*
    ** Telemetry Packets

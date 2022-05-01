@@ -132,6 +132,13 @@
             </GenericTypeMapSet>
           </Interface>
           
+          <Interface name="EXE_APP" shortDescription="Signal app to execute command interface" type="CFE_SB/Telecommand">
+             <!-- This uses a bare spacepacket with no payload -->
+             <GenericTypeMapSet>
+                <GenericTypeMap name="TelecommandDataType" type="CFE_HDR/CommandHeader" />
+             </GenericTypeMapSet>
+          </Interface>
+                    
           <Interface name="STATUS_TLM" shortDescription="Software bus status telemetry interface" type="CFE_SB/Telemetry">
             <GenericTypeMapSet>
               <GenericTypeMap name="TelemetryDataType" type="StatusTlm" />
@@ -146,11 +153,13 @@
         <Implementation>
           <VariableSet>
             <Variable type="BASE_TYPES/uint16" readOnly="true" name="CmdTopicId"       initialValue="${CFE_MISSION/PL_MGR_CMD_TOPICID}" />
+            <Variable type="BASE_TYPES/uint16" readOnly="true" name="ExeAppTopicId"    initialValue="${CFE_MISSION/PL_MGR_EXE_TOPICID}" />
             <Variable type="BASE_TYPES/uint16" readOnly="true" name="StatusTlmTopicId" initialValue="${CFE_MISSION/PL_MGR_STATUS_TLM_TOPICID}" />
           </VariableSet>
           <!-- Assign fixed numbers to the "TopicId" parameter of each interface -->
           <ParameterMapSet>          
             <ParameterMap interface="CMD"        parameter="TopicId" variableRef="CmdTopicId" />
+            <ParameterMap interface="EXE_APP"    parameter="TopicId" variableRef="ExeAppTopicId" />
             <ParameterMap interface="STATUS_TLM" parameter="TopicId" variableRef="StatusTlmTopicId" />
           </ParameterMapSet>
         </Implementation>

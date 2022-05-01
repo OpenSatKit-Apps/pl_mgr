@@ -146,10 +146,12 @@ void PAYLOAD_ManageData(void)
    if (Payload->CurrPower == PL_SIM_LIB_POWER_READY)
    {   
       PL_SIM_LIB_ReadDetector(&Payload->Detector);
-      if (Payload->Detector.ReadoutRow >= PL_SIM_LIB_DETECTOR_ROWS_PER_IMAGE)
-         SCI_FILE_WriteDetectorData(&Payload->Detector, SCI_FILE_SAVE_LAST_ROW);
+      if (Payload->Detector.ReadoutRow == 0)
+         SCI_FILE_WriteDetectorData(&Payload->Detector, SCI_FILE_FIRST_ROW);
+      else if (Payload->Detector.ReadoutRow >= (PL_SIM_LIB_DETECTOR_ROWS_PER_IMAGE-1))
+         SCI_FILE_WriteDetectorData(&Payload->Detector, SCI_FILE_LAST_ROW);
       else
-         SCI_FILE_WriteDetectorData(&Payload->Detector, SCI_FILE_SAVE_ROW);
+         SCI_FILE_WriteDetectorData(&Payload->Detector, SCI_FILE_ROW);
    }
    else
    {

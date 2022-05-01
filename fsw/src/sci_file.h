@@ -45,11 +45,9 @@
 /**********************/
 
 /*
-** This state information is used for communication between the
-** command functions and the execute function.
-**  OFF      - Science is not being written to a file
-**  STARTING - Commanded to start saving data, but no data received
-**  ACTIVE   - Science data has been received since a start command
+** SCI_FILE_Control_t helps minimize sci_file's coupling to the detector
+** details. SCI_FILE_WriteDetectorData() uses the control information
+** for creating and closing files. 
 */
 typedef enum
 {
@@ -63,9 +61,10 @@ typedef enum
 typedef enum
 {
 
-   SCI_FILE_SAVE_ROW      = 1,
-   SCI_FILE_SAVE_LAST_ROW = 2,
-   SCI_FILE_SHUTDOWN      = 3
+   SCI_FILE_FIRST_ROW  = 1,
+   SCI_FILE_ROW        = 2,
+   SCI_FILE_LAST_ROW   = 3,
+   SCI_FILE_SHUTDOWN   = 4
 
 } SCI_FILE_Control_t;
 

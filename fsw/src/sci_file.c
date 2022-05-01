@@ -185,6 +185,8 @@ bool SCI_FILE_Stop(char *EventStr, uint16 MaxStrLen)
 void SCI_FILE_WriteDetectorData(PL_SIM_LIB_Detector_t *Detector, SCI_FILE_Control_t Control)
 {
 
+   bool SaveDetectorRow = true; 
+   
    if (Control == SCI_FILE_SHUTDOWN)
    {
       CloseFile();
@@ -197,13 +199,19 @@ void SCI_FILE_WriteDetectorData(PL_SIM_LIB_Detector_t *Detector, SCI_FILE_Contro
 
          if (SciFile->CreateNewFile)
          {
-            CreateFile(Detector->ImageCnt);
-            SciFile->CreateNewFile = false;
+         
+            /* Wait for first row before creating a file */
+            if (Control == SCI_FILE_FIRST_ROW)
+            {
+               CreateFile(Detector->ImageCnt);
+               SciFile->CreateNewFile = false;
+               SaveDetectorRow = false;
+            }
          }
 
-         WriteDetectorRow(&Detector->Row);         
+         if (SaveDetectorRow) WriteDetectorRow(&Detector->Row);         
          
-         if (Control == SCI_FILE_SAVE_LAST_ROW)
+         if (Control == SCI_FILE_LAST_ROW)
          {
             SciFile->ImageCnt++;
             if (SciFile->ImageCnt >= SciFile->Config.ImagesPerFile)

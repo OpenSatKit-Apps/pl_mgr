@@ -21,13 +21,13 @@
 ** Command Message IDs
 */
 
-#define  PL_MGR_CMD_MID  0x19C0
-
+#define  PL_MGR_CMD_MID  0x1862  /* 6242 */
+#define  PL_MGR_EXE_MID  0x1863
 
 /*
 ** Telemetry Message IDs
 */
 
-#define  PL_MGR_TLM_HK_MID  0x09C0  /* Needed for LC, must match pl_mgr_ini.json definition */
+#define  PL_MGR_TLM_MID  0x0860  /* 2144: Needed for LC, must match pl_mgr_ini.json definition */
 
 #endif /* _pl_mgr_msgids_ */

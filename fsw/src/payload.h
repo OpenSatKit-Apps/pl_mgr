@@ -83,6 +83,8 @@ typedef struct
    PL_SIM_LIB_Power_t    PrevPower;
    PL_SIM_LIB_Detector_t Detector;
    
+   boolean DetectorFault;
+
    SCI_FILE_Class_t SciFile;
 
 } PAYLOAD_Class_t;

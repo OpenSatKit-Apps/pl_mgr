@@ -146,6 +146,10 @@ void PAYLOAD_ManageData(void)
    if (Payload->CurrPower == PL_SIM_LIB_POWER_READY)
    {   
       PL_SIM_LIB_ReadDetector(&Payload->Detector);
+
+      /* Simulation puts a character in first byte when a fault is present */
+      Payload->DetectorFault = isalpha(Payload->Detector.Row.Data[0]);
+         
       if (Payload->Detector.ReadoutRow == 0)
          SCI_FILE_WriteDetectorData(&Payload->Detector, SCI_FILE_FIRST_ROW);
       else if (Payload->Detector.ReadoutRow >= (PL_SIM_LIB_DETECTOR_ROWS_PER_IMAGE-1))

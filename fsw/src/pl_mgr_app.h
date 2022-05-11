@@ -72,7 +72,8 @@ typedef struct
    */
    
    uint8    PayloadPowerState;
-   uint8    PayloadDetectorReadoutRow;
+   boolean  PayloadDetectorFault;
+   uint16   PayloadDetectorReadoutRow;   /* Only need 8-bits, so have 8 bit spare */
    uint16   PayloadDetectorImageCnt;
 
    /*

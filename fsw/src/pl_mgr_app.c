@@ -164,6 +164,7 @@ static void SendStatusTlm(void)
    */
    
    PlMgr.StatusTlm.PayloadPowerState         = PlMgr.Payload.CurrPower;
+   PlMgr.StatusTlm.PayloadDetectorFault      = PlMgr.Payload.DetectorFault;
    PlMgr.StatusTlm.PayloadDetectorReadoutRow = PlMgr.Payload.Detector.ReadoutRow;
    PlMgr.StatusTlm.PayloadDetectorImageCnt   = PlMgr.Payload.Detector.ImageCnt;
 

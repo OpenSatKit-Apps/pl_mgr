@@ -205,6 +205,9 @@ void SCI_FILE_WriteDetectorData(PL_SIM_LIB_Detector_t *Detector, SCI_FILE_Contro
             {
                CreateFile(Detector->ImageCnt);
                SciFile->CreateNewFile = false;
+            }
+            else
+            {
                SaveDetectorRow = false;
             }
          }

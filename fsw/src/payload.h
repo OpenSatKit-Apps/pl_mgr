@@ -31,6 +31,7 @@
 ** Includes
 */
 
+#include <ctype.h>
 #include "app_cfg.h"
 #include "pl_sim_lib.h"  /* See prologue notes */
 #include "sci_file.h"
@@ -63,8 +64,8 @@
 **
 */
 
-#define PAYLOAD_START_SCI_CMD_DATA_LEN  PKTUTIL_NO_PARAM_CMD_DATA_LEN
-#define PAYLOAD_STOP_SCI_CMD_DATA_LEN   PKTUTIL_NO_PARAM_CMD_DATA_LEN
+#define PAYLOAD_START_SCI_CMD_DATA_LEN  CMDMGR_NO_PARAM_CMD_DATA_LEN
+#define PAYLOAD_STOP_SCI_CMD_DATA_LEN   CMDMGR_NO_PARAM_CMD_DATA_LEN
 
 
 /******************************************************************************
@@ -83,7 +84,7 @@ typedef struct
    PL_SIM_LIB_Power_t    PrevPower;
    PL_SIM_LIB_Detector_t Detector;
    
-   boolean DetectorFault;
+   bool DetectorFault;
 
    SCI_FILE_Class_t SciFile;
 

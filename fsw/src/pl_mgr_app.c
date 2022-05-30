@@ -113,7 +113,7 @@ void PL_MGR_AppMain(void)
 ** Function signature must match CMDMGR_CmdFuncPtr typedef 
 */
 
-bool PL_MGR_NoOpCmd(void* DataObjPtr, const CFE_SB_Buffer_t* SbBufPtr)
+bool PL_MGR_NoOpCmd(void* DataObjPtr, const CFE_MSG_Message_t *MsgPtr)
 {
 
    CFE_EVS_SendEvent (PL_MGR_NOOP_CMD_EID, CFE_EVS_EventType_INFORMATION,
@@ -123,7 +123,7 @@ bool PL_MGR_NoOpCmd(void* DataObjPtr, const CFE_SB_Buffer_t* SbBufPtr)
    return true;
 
 
-} /* End PL_MGR_NoOpCmd() */
+} /* End PL_MGR_NoopCmd() */
 
 
 /******************************************************************************
@@ -132,7 +132,7 @@ bool PL_MGR_NoOpCmd(void* DataObjPtr, const CFE_SB_Buffer_t* SbBufPtr)
 ** Function signature must match CMDMGR_CmdFuncPtr typedef 
 */
 
-bool PL_MGR_ResetAppCmd(void* DataObjPtr, const CFE_SB_Buffer_t* SbBufPtr)
+bool PL_MGR_ResetAppCmd(void* DataObjPtr, const CFE_MSG_Message_t *MsgPtr)
 {
 
    CMDMGR_ResetStatus(CMDMGR_OBJ);
@@ -275,7 +275,7 @@ static int32 ProcessCommands(void)
          if (CFE_SB_MsgId_Equal(MsgId, PlMgr.CmdMid)) 
          {
             
-            CMDMGR_DispatchFunc(CMDMGR_OBJ, SbBufPtr);
+            CMDMGR_DispatchFunc(CMDMGR_OBJ, &SbBufPtr->Msg);
          
          } 
          else if (CFE_SB_MsgId_Equal(MsgId, PlMgr.ExecuteMid))

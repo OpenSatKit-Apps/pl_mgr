@@ -74,7 +74,7 @@ void PAYLOAD_ResetStatus(void)
 ** Note:
 **  1. This function must comply with the CMDMGR_CmdFuncPtr definition
 */
-bool PAYLOAD_StartSciCmd (void* DataObjPtr, const CFE_SB_Buffer_t* SbBufPtr)
+bool PAYLOAD_StartSciCmd (void* DataObjPtr, const CFE_MSG_Message_t *MsgPtr)
 {
 
    bool RetStatus = false;
@@ -114,7 +114,7 @@ bool PAYLOAD_StartSciCmd (void* DataObjPtr, const CFE_SB_Buffer_t* SbBufPtr)
 ** Note:
 **  1. This function must comply with the CMDMGR_CmdFuncPtr definition
 */
-bool PAYLOAD_StopSciCmd(void* DataObjPtr, const CFE_SB_Buffer_t* SbBufPtr)
+bool PAYLOAD_StopSciCmd(void* DataObjPtr, const CFE_MSG_Message_t *MsgPtr)
 {
    char EventStr[132];
    

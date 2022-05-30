@@ -93,10 +93,10 @@ void SCI_FILE_ResetStatus(void)
 **           rest of filename and extension.
 **
 */
-bool SCI_FILE_ConfigCmd(void* DataObjPtr, const CFE_SB_Buffer_t* SbBufPtr)
+bool SCI_FILE_ConfigCmd(void* DataObjPtr, const CFE_MSG_Message_t *MsgPtr)
 {
 
-   const  SCI_FILE_Config_t *ConfigCmd = CMDMGR_PAYLOAD_PTR(SbBufPtr, SCI_FILE_ConfigCmdMsg_t);
+   const  SCI_FILE_Config_t *ConfigCmd = CMDMGR_PAYLOAD_PTR(MsgPtr, SCI_FILE_ConfigCmdMsg_t);
    
    SciFile->Config.ImagesPerFile = ConfigCmd->ImagesPerFile;
    

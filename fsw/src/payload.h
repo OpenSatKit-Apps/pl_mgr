@@ -141,7 +141,7 @@ void PAYLOAD_ResetStatus(void);
 **     command with a parameter that would need validation
 **
 */
-bool PAYLOAD_StartSciCmd(void* DataObjPtr, const CFE_SB_Buffer_t* SbBufPtr);
+bool PAYLOAD_StartSciCmd(void* DataObjPtr, const CFE_MSG_Message_t *MsgPtr);
 
 
 /******************************************************************************
@@ -155,7 +155,7 @@ bool PAYLOAD_StartSciCmd(void* DataObjPtr, const CFE_SB_Buffer_t* SbBufPtr);
 **     command with a parameter that would need validation
 **
 */
-bool PAYLOAD_StopSciCmd(void* DataObjPtr, const CFE_SB_Buffer_t* SbBufPtr);
+bool PAYLOAD_StopSciCmd(void* DataObjPtr, const CFE_MSG_Message_t *MsgPtr);
 
 
 #endif /* _sci_file_ */

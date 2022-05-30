@@ -167,7 +167,7 @@ void SCI_FILE_WriteDetectorData(PL_SIM_LIB_Detector_t *Detector, SCI_FILE_Contro
 **  1. This function must comply with the CMDMGR_CmdFuncPtr definition
 **
 */
-bool SCI_FILE_ConfigCmd(void* DataObjPtr, const CFE_SB_Buffer_t* SbBufPtr);
+bool SCI_FILE_ConfigCmd(void* DataObjPtr, const CFE_MSG_Message_t *MsgPtr);
 
 
 /******************************************************************************

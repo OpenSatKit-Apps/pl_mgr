@@ -1,21 +1,31 @@
 /*
-** Purpose: Define the science file management object 
+**  Copyright 2022 bitValence, Inc.
+**  All Rights Reserved.
 **
-** Notes:
-**   1. An effort was made to minimize the coupling between this object
-**      and the payload. Science files only need to know the data being
-**      written. Logic about the payload state and whether or not science
-**      files can be created is maintained by this object's owner.  
+**  This program is free software; you can modify and/or redistribute it
+**  under the terms of the GNU Affero General Public License
+**  as published by the Free Software Foundation; version 3 with
+**  attribution addendums as found in the LICENSE.txt
 **
-** License:
-**   Written by David McComas and licensed under the GNU
-**   Lesser General Public License (LGPL).
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU Affero General Public License for more details.
 **
-** References:
-**   1. OpenSatKit Object-based Application Developer's Guide.
-**   2. cFS Application Developer's Guide.
+**  Purpose:
+**    Define the science file management object
+**
+**  Notes:
+**    1. An effort was made to minimize the coupling between this object
+**       and the payload. Science files only need to know the data being
+**       written. Logic about the payload state and whether or not science
+**       files can be created is maintained by this object's owner.  
+**
+**  References:
+**    1. OpenSatKit Object-based Application Developer's Guide
+**    2. cFS Application Developer's Guide
+**
 */
-
 #ifndef _sci_file_
 #define _sci_file_
 

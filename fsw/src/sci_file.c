@@ -1,17 +1,28 @@
 /*
-** Purpose: Implement the science file management object 
+**  Copyright 2022 bitValence, Inc.
+**  All Rights Reserved.
 **
-** Notes:
-**   1. Information events are used in order to trace execution for
-**      demonstrations.
+**  This program is free software; you can modify and/or redistribute it
+**  under the terms of the GNU Affero General Public License
+**  as published by the Free Software Foundation; version 3 with
+**  attribution addendums as found in the LICENSE.txt
 **
-** License:
-**   Written by David McComas and licensed under the GNU
-**   Lesser General Public License (LGPL).
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU Affero General Public License for more details.
 **
-** References:
-**   1. OpenSatKit Object-based Application Developers Guide.
-**   2. cFS Application Developer's Guide.
+**  Purpose:
+**    Implement the science file management object
+**
+**  Notes:
+**    1. Information events are used in order to trace execution for
+**       demonstrations.
+**
+**  References:
+**    1. OpenSatKit Object-based Application Developer's Guide
+**    2. cFS Application Developer's Guide
+**
 */
 
 /*
@@ -70,18 +81,6 @@ void SCI_FILE_Constructor(SCI_FILE_Class_t *SciFilePtr, INITBL_Class_t *IniTbl)
 
 
 /******************************************************************************
-** Function:  SCI_FILE_ResetStatus
-**
-*/
-void SCI_FILE_ResetStatus(void)
-{
-
-   /* No state data should be changed */
-   
-} /* End SCI_FILE_ResetStatus() */
-
-
-/******************************************************************************
 ** Functions: SCI_FILE_ConfigCmd
 **
 ** Set configuration parameters for managing science files 
@@ -109,6 +108,18 @@ bool SCI_FILE_ConfigCmd(void* DataObjPtr, const CFE_MSG_Message_t *MsgPtr)
    return true;
    
 } /* End SCI_FILE_ConfigCmd() */
+
+
+/******************************************************************************
+** Function:  SCI_FILE_ResetStatus
+**
+*/
+void SCI_FILE_ResetStatus(void)
+{
+
+   /* No state data should be changed */
+   
+} /* End SCI_FILE_ResetStatus() */
 
 
 /******************************************************************************
@@ -231,24 +242,59 @@ void SCI_FILE_WriteDetectorData(PL_SIM_LIB_Detector_t *Detector, SCI_FILE_Contro
 
 
 /******************************************************************************
-** Functions: InitFileState
+** Functions: CloseFile
 **
-** Initialize the SciFile object to a known state.
+** Close the current science file.
 **
-** Notess:
+** Notes:
 **   None
 */
-static void InitFileState(void)
+static void CloseFile(void)
+{
+ 
+   if (SciFile->IsOpen)
+   {
+      
+      OS_close(SciFile->Handle);
+      
+      CFE_EVS_SendEvent (SCI_FILE_CLOSE_EID, CFE_EVS_EventType_INFORMATION, 
+                         "Closed science file %s",SciFile->Name);         
+      
+      SciFile->IsOpen = false;
+      strcpy(SciFile->Name, SCI_FILE_UNDEF_FILE);
+
+   }
+
+} /* End SciFile_Close() */
+
+
+/******************************************************************************
+** Functions: CreateCntFilename
+**
+** Create a filename using the table-defined base path/filename, current image
+** ID, and the table-defined extension. 
+**
+** Notes:
+**   1. No string buffer error checking performed
+*/
+static void CreateCntFilename(uint16 ImageId)
 {
    
-   SciFile->CreateNewFile = false;
-   SciFile->State    = SCI_FILE_DISABLED;
-   SciFile->Handle   = 0;
-   SciFile->IsOpen   = false;
-   SciFile->ImageCnt = 0;
-   strcpy(SciFile->Name, SCI_FILE_UNDEF_FILE);
+   int i;
    
-} /* End InitFileState() */
+   char ImageIdStr[64];
+
+   sprintf(ImageIdStr,"%03d",ImageId);
+
+   strcpy (SciFile->Name, SciFile->Config.PathBaseFilename);
+
+   i = strlen(SciFile->Name);  /* Starting position for image ID */
+   strcat (&(SciFile->Name[i]), ImageIdStr);
+   
+   i = strlen(SciFile->Name);  /* Starting position for extension */
+   strcat (&(SciFile->Name[i]), SciFile->Config.FileExtension);
+   
+} /* End CreateCntFilename() */
 
 
 /******************************************************************************
@@ -307,59 +353,24 @@ static bool CreateFile(uint16 ImageId)
 
 
 /******************************************************************************
-** Functions: CloseFile
+** Functions: InitFileState
 **
-** Close the current science file.
+** Initialize the SciFile object to a known state.
 **
-** Notes:
+** Notess:
 **   None
 */
-static void CloseFile(void)
-{
- 
-   if (SciFile->IsOpen)
-   {
-      
-      OS_close(SciFile->Handle);
-      
-      CFE_EVS_SendEvent (SCI_FILE_CLOSE_EID, CFE_EVS_EventType_INFORMATION, 
-                         "Closed science file %s",SciFile->Name);         
-      
-      SciFile->IsOpen = false;
-      strcpy(SciFile->Name, SCI_FILE_UNDEF_FILE);
-
-   }
-
-} /* End SciFile_Close() */
-
-
-/******************************************************************************
-** Functions: CreateCntFilename
-**
-** Create a filename using the table-defined base path/filename, current image
-** ID, and the table-defined extension. 
-**
-** Notes:
-**   1. No string buffer error checking performed
-*/
-static void CreateCntFilename(uint16 ImageId)
+static void InitFileState(void)
 {
    
-   int i;
+   SciFile->CreateNewFile = false;
+   SciFile->State    = SCI_FILE_DISABLED;
+   SciFile->Handle   = 0;
+   SciFile->IsOpen   = false;
+   SciFile->ImageCnt = 0;
+   strcpy(SciFile->Name, SCI_FILE_UNDEF_FILE);
    
-   char ImageIdStr[64];
-
-   sprintf(ImageIdStr,"%03d",ImageId);
-
-   strcpy (SciFile->Name, SciFile->Config.PathBaseFilename);
-
-   i = strlen(SciFile->Name);  /* Starting position for image ID */
-   strcat (&(SciFile->Name[i]), ImageIdStr);
-   
-   i = strlen(SciFile->Name);  /* Starting position for extension */
-   strcat (&(SciFile->Name[i]), SciFile->Config.FileExtension);
-   
-} /* End CreateCntFilename() */
+} /* End InitFileState() */
 
 
 /******************************************************************************

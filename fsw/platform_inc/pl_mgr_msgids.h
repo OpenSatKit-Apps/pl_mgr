@@ -1,17 +1,27 @@
 /*
-** Purpose: Define message IDs for the Playload Manager App
+**  Copyright 2022 bitValence, Inc.
+**  All Rights Reserved.
 **
-** Notes:
-**   1. See JSON init file.
-**   2. PL_MGR_CMD_MID is defined in this header because it is needed by stored commands.
+**  This program is free software; you can modify and/or redistribute it
+**  under the terms of the GNU Affero General Public License
+**  as published by the Free Software Foundation; version 3 with
+**  attribution addendums as found in the LICENSE.txt
 **
-** License:
-**   Written by David McComas, licensed under the copyleft GNU General
-**   Public License (GPL).
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU Affero General Public License for more details.
 **
-** References:
-**   1. OpenSatKit Object-based Application Developer's Guide.
-**   2. cFS Application Developer's Guide.
+**  Purpose:
+**    Define message IDs for the Playload Manager App
+**
+**  Notes:
+**    1. See JSON init file.
+**    2. PL_MGR_CMD_MID is defined in this header because it is needed by stored commands.
+**
+**  References:
+**    1. OpenSatKit Object-based Application Developer's Guide.
+**    2. cFS Application Developer's Guide.
 **
 */
 #ifndef _pl_mgr_msgids_

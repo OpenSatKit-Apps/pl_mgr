@@ -1,16 +1,26 @@
-/* 
-** Purpose: Implement the Payload Manager App
+/*
+**  Copyright 2022 bitValence, Inc.
+**  All Rights Reserved.
 **
-** Notes:
-**   None
+**  This program is free software; you can modify and/or redistribute it
+**  under the terms of the GNU Affero General Public License
+**  as published by the Free Software Foundation; version 3 with
+**  attribution addendums as found in the LICENSE.txt
 **
-** License:
-**   Written by David McComas, licensed under the copyleft GNU
-**   General Public License (GPL). 
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU Affero General Public License for more details.
 **
-** References:
-**   1. OpenSatKit Object-based Application Developer's Guide.
-**   2. cFS Application Developer's Guide.
+**  Purpose:
+**    Implement the Payload Manager App
+**
+**  Notes:
+**    None
+**
+**  References:
+**    1. OpenSatKit Object-based Application Developer's Guide
+**    2. cFS Application Developer's Guide
 **
 */
 
@@ -144,44 +154,6 @@ bool PL_MGR_ResetAppCmd(void* DataObjPtr, const CFE_MSG_Message_t *MsgPtr)
 } /* End PL_MGR_ResetAppCmd() */
 
 
-/******************************************************************************
-** Function: SendStatusTlm
-**
-*/
-static void SendStatusTlm(void)
-{
-
-   /*
-   ** CMDMGR Data
-   */
-
-   PlMgr.StatusTlm.ValidCmdCnt   = PlMgr.CmdMgr.ValidCmdCnt;
-   PlMgr.StatusTlm.InvalidCmdCnt = PlMgr.CmdMgr.InvalidCmdCnt;
-
-   
-   /*
-   ** Payload Data
-   */
-   
-   PlMgr.StatusTlm.PayloadPowerState         = PlMgr.Payload.CurrPower;
-   PlMgr.StatusTlm.PayloadDetectorFault      = PlMgr.Payload.DetectorFault;
-   PlMgr.StatusTlm.PayloadDetectorReadoutRow = PlMgr.Payload.Detector.ReadoutRow;
-   PlMgr.StatusTlm.PayloadDetectorImageCnt   = PlMgr.Payload.Detector.ImageCnt;
-
-   /*
-   ** Science File Data
-   */   
-
-   PlMgr.StatusTlm.SciFileOpen     = PlMgr.Payload.SciFile.IsOpen;
-   PlMgr.StatusTlm.SciFileImageCnt = PlMgr.Payload.SciFile.ImageCnt;   
-   strncpy(PlMgr.StatusTlm.SciFilename, PlMgr.Payload.SciFile.Name, OS_MAX_PATH_LEN);
-   
-   CFE_SB_TimeStampMsg(CFE_MSG_PTR(PlMgr.StatusTlm.TelemetryHeader));
-   CFE_SB_TransmitMsg(CFE_MSG_PTR(PlMgr.StatusTlm.TelemetryHeader), true);
-
-} /* End SendStatusTlm() */
-
-   
 /******************************************************************************
 ** Function: InitApp
 **
@@ -327,4 +299,41 @@ static int32 ProcessCommands(void)
    
 } /* End ProcessCommands() */
 
+
+/******************************************************************************
+** Function: SendStatusTlm
+**
+*/
+static void SendStatusTlm(void)
+{
+
+   /*
+   ** CMDMGR Data
+   */
+
+   PlMgr.StatusTlm.ValidCmdCnt   = PlMgr.CmdMgr.ValidCmdCnt;
+   PlMgr.StatusTlm.InvalidCmdCnt = PlMgr.CmdMgr.InvalidCmdCnt;
+
+   
+   /*
+   ** Payload Data
+   */
+   
+   PlMgr.StatusTlm.PayloadPowerState         = PlMgr.Payload.CurrPower;
+   PlMgr.StatusTlm.PayloadDetectorFault      = PlMgr.Payload.DetectorFault;
+   PlMgr.StatusTlm.PayloadDetectorReadoutRow = PlMgr.Payload.Detector.ReadoutRow;
+   PlMgr.StatusTlm.PayloadDetectorImageCnt   = PlMgr.Payload.Detector.ImageCnt;
+
+   /*
+   ** Science File Data
+   */   
+
+   PlMgr.StatusTlm.SciFileOpen     = PlMgr.Payload.SciFile.IsOpen;
+   PlMgr.StatusTlm.SciFileImageCnt = PlMgr.Payload.SciFile.ImageCnt;   
+   strncpy(PlMgr.StatusTlm.SciFilename, PlMgr.Payload.SciFile.Name, OS_MAX_PATH_LEN);
+   
+   CFE_SB_TimeStampMsg(CFE_MSG_PTR(PlMgr.StatusTlm.TelemetryHeader));
+   CFE_SB_TransmitMsg(CFE_MSG_PTR(PlMgr.StatusTlm.TelemetryHeader), true);
+
+} /* End SendStatusTlm() */
 

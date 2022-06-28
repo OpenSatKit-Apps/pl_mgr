@@ -1,27 +1,37 @@
-/* 
-** Purpose: Define the Payload Manager App
+/*
+**  Copyright 2022 bitValence, Inc.
+**  All Rights Reserved.
 **
-** Notes:
-**   1. Provide an example app that controls a payload through
-**      library calls. pl_sim_lib provides a library with functions
-**      that emulate a hardware library interfacing to a payload.
-**      pl_sim_app provides a ground interface for configring the
-**      simulation during runtime.
-**   2. An alternative simulation design is to create a payload
-**      interface app that send SB messages between the payload
-**      and the payload manager app. 
-**   3. The 'business logic' regarding when payload data can be collected
-**      and when science files can be created is managed at the app level
-**      so the SCI_FILE object's scope is limited to science data formats
-**      and science file management. 
+**  This program is free software; you can modify and/or redistribute it
+**  under the terms of the GNU Affero General Public License
+**  as published by the Free Software Foundation; version 3 with
+**  attribution addendums as found in the LICENSE.txt
 **
-** License:
-**   Written by David McComas and licensed under the GNU
-**   Lesser General Public License (LGPL).
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU Affero General Public License for more details.
 **
-** References:
-**   1. OpenSatKit Object-based Application Developer's Guide.
-**   2. cFS Application Developer's Guide.
+**  Purpose:
+**    Define the Payload Manager App
+**
+**  Notes:
+**    1. Provide an example app that controls a payload through
+**       library calls. pl_sim_lib provides a library with functions
+**       that emulate a hardware library interfacing to a payload.
+**       pl_sim_app provides a ground interface for configring the
+**       simulation during runtime.
+**    2. An alternative simulation design is to create a payload
+**       interface app that send SB messages between the payload
+**       and the payload manager app. 
+**    3. The 'business logic' regarding when payload data can be collected
+**       and when science files can be created is managed at the app level
+**       so the SCI_FILE object's scope is limited to science data formats
+**       and science file management. 
+**
+**  References:
+**    1. OpenSatKit Object-based Application Developer's Guide
+**    2. cFS Application Developer's Guide
 **
 */
 #ifndef _pl_mgr_

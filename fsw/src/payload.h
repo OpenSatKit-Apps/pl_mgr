@@ -1,29 +1,39 @@
 /*
-** Purpose: Define the payload management object 
+**  Copyright 2022 bitValence, Inc.
+**  All Rights Reserved.
 **
-** Notes:
-**   1. An effort was made to maximize this object's coupling with the
-**      payload interface and minimize the pl_mgr app and sci_file object
-**      couplings. 
-**   2. The payload object encapulates the payload interface (maximize
-**      coupling), however some of the interface types are needed by the
-**      pl_mgr app and the sci_file object. In an effort to minimze coupling
-**      pl_sim_app.h is included here and payload.h should only be included
-**      where it is absolutely needed. 
-**   3. This is a command driven design as opposed to a data driven design.
-**      Commands are used to start/stop science data file management. An 
-**      alternative design would be a data driven one where the science
-**      files would be generated whenever the detector ouptputs data.
+**  This program is free software; you can modify and/or redistribute it
+**  under the terms of the GNU Affero General Public License
+**  as published by the Free Software Foundation; version 3 with
+**  attribution addendums as found in the LICENSE.txt
 **
-** License:
-**   Written by David McComas and licensed under the GNU
-**   Lesser General Public License (LGPL).
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU Affero General Public License for more details.
 **
-** References:
-**   1. OpenSatKit Object-based Application Developer's Guide.
-**   2. cFS Application Developer's Guide.
+**  Purpose:
+**    Define the payload management object
+**
+**  Notes:
+**    1. An effort was made to maximize this object's coupling with the
+**       payload interface and minimize the pl_mgr app and sci_file object
+**       couplings. 
+**    2. The payload object encapulates the payload interface (maximize
+**       coupling), however some of the interface types are needed by the
+**       pl_mgr app and the sci_file object. In an effort to minimze coupling
+**       pl_sim_app.h is included here and payload.h should only be included
+**       where it is absolutely needed. 
+**    3. This is a command driven design as opposed to a data driven design.
+**       Commands are used to start/stop science data file management. An 
+**       alternative design would be a data driven one where the science
+**       files would be generated whenever the detector ouptputs data.
+**
+**  References:
+**    1. OpenSatKit Object-based Application Developer's Guide
+**    2. cFS Application Developer's Guide
+**
 */
-
 #ifndef _payload_
 #define _payload_
 
@@ -109,7 +119,7 @@ void PAYLOAD_Constructor(PAYLOAD_Class_t *PayloadPtr, INITBL_Class_t *IniTbl);
 
 
 /******************************************************************************
-** Function: PAYLOAD_Execute
+** Function: PAYLOAD_ManageData
 **
 ** Execute a single simulation step.
 **

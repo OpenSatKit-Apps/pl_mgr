@@ -1,21 +1,30 @@
 /*
-** Purpose: Define configurations for the Payload Manager App
+**  Copyright 2022 bitValence, Inc.
+**  All Rights Reserved.
 **
-** Notes:
-**   1. These macros can only be built with the application and can't
-**      have a platform scope because the same file name is used for
-**      all applications following the object-based application design.
+**  This program is free software; you can modify and/or redistribute it
+**  under the terms of the GNU Affero General Public License
+**  as published by the Free Software Foundation; version 3 with
+**  attribution addendums as found in the LICENSE.txt
 **
-** License:
-**   Written by David McComas and licensed under the GNU
-**   Lesser General Public License (LGPL).
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU Affero General Public License for more details.
 **
-** References:
-**   1. OpenSatKit Object-based Application Developers Guide.
-**   2. cFS Application Developer's Guide.
+**  Purpose:
+**    Define configurations for the Payload Manager App
+**
+**  Notes:
+**    1. These macros can only be built with the application and can't
+**       have a platform scope because the same file name is used for
+**       all applications following the object-based application design.
+**
+**  References:
+**    1. OpenSatKit Object-based Application Developer's Guide.
+**    2. cFS Application Developer's Guide.
 **
 */
-
 #ifndef _app_cfg_
 #define _app_cfg_
 
@@ -38,8 +47,8 @@
 ** 1.0 - Initial release based on OSK Instrument Simulator(ISIM)
 */
 
-#define  PL_MGR_MAJOR_VER   1
-#define  PL_MGR_MINOR_VER   0
+#define  PL_MGR_MAJOR_VER   0
+#define  PL_MGR_MINOR_VER   9
 
 
 /******************************************************************************

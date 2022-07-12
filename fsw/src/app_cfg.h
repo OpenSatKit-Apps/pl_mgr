@@ -62,10 +62,10 @@
 #define CFG_APP_CFE_NAME        APP_CFE_NAME
 #define CFG_APP_PERF_ID         APP_PERF_ID
 
-#define CFG_CMD_MID             CMD_MID
-#define CFG_EXECUTE_MID         EXECUTE_MID
-#define CFG_TLM_MID             TLM_MID
-#define CFG_TLM_SLOW_RATE       TLM_SLOW_RATE
+#define CFG_PL_MGR_CMD_TOPICID         PL_MGR_CMD_TOPICID
+#define CFG_PL_MGR_EXE_TOPICID         PL_MGR_EXE_TOPICID
+#define CFG_PL_MGR_STATUS_TLM_TOPICID  PL_MGR_STATUS_TLM_TOPICID
+#define CFG_TLM_SLOW_RATE              TLM_SLOW_RATE
       
 #define CFG_CMD_PIPE_DEPTH      CMD_PIPE_DEPTH
 #define CFG_CMD_PIPE_NAME       CMD_PIPE_NAME
@@ -77,9 +77,9 @@
 #define APP_CONFIG(XX) \
    XX(APP_CFE_NAME,char*) \
    XX(APP_PERF_ID,uint32) \
-   XX(CMD_MID,uint32) \
-   XX(EXECUTE_MID,uint32) \
-   XX(TLM_MID,uint32) \
+   XX(PL_MGR_CMD_TOPICID,uint32) \
+   XX(PL_MGR_EXE_TOPICID,uint32) \
+   XX(PL_MGR_STATUS_TLM_TOPICID,uint32) \
    XX(TLM_SLOW_RATE,uint32) \
    XX(CMD_PIPE_DEPTH,uint32) \
    XX(CMD_PIPE_NAME,char*) \

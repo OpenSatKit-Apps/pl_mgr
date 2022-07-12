@@ -8,9 +8,9 @@
       "APP_CFE_NAME": "PL_MGR",
       "APP_PERF_ID" : 127,
       
-      "CMD_MID"      : 6592,
-      "EXECUTE_MID"  : 6593,
-      "TLM_MID"      : 2496,
+      "PL_MGR_CMD_TOPICID"        : 6242,
+      "PL_MGR_EXE_TOPICID"        : 6243,
+      "PL_MGR_STATUS_TLM_TOPICID" : 2144,
       "TLM_SLOW_RATE": 4,
       
       "CMD_PIPE_DEPTH": 10,
@@ -18,7 +18,7 @@
 
       "SCI_FILE_PATH_BASE": "/cf/pl_sci_",
       "SCI_FILE_EXTENSION": ".txt",
-      "SCI_FILE_IMAGE_CNT": 6
+      "SCI_FILE_IMAGE_CNT": 3
 
    }
 }

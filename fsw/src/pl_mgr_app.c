@@ -172,8 +172,8 @@ static int32 InitApp(void)
       PlMgr.PerfId  = INITBL_GetIntConfig(INITBL_OBJ, CFG_APP_PERF_ID);
       CFE_ES_PerfLogEntry(PlMgr.PerfId);
 
-      PlMgr.CmdMid      = CFE_SB_ValueToMsgId(INITBL_GetIntConfig(INITBL_OBJ, CFG_CMD_MID));
-      PlMgr.ExecuteMid  = CFE_SB_ValueToMsgId(INITBL_GetIntConfig(INITBL_OBJ, CFG_EXECUTE_MID));
+      PlMgr.CmdMid      = CFE_SB_ValueToMsgId(INITBL_GetIntConfig(INITBL_OBJ, CFG_PL_MGR_CMD_TOPICID));
+      PlMgr.ExecuteMid  = CFE_SB_ValueToMsgId(INITBL_GetIntConfig(INITBL_OBJ, CFG_PL_MGR_EXE_TOPICID));
       PlMgr.TlmSlowRate = INITBL_GetIntConfig(INITBL_OBJ, CFG_TLM_SLOW_RATE);
 
       PAYLOAD_Constructor(PAYLOAD_OBJ, INITBL_OBJ);
@@ -201,7 +201,9 @@ static int32 InitApp(void)
       CMDMGR_RegisterFunc(CMDMGR_OBJ, PAYLOAD_STOP_SCI_CMD_FC,  PAYLOAD_OBJ,  PAYLOAD_StopSciCmd,  PAYLOAD_STOP_SCI_CMD_DATA_LEN);
       CMDMGR_RegisterFunc(CMDMGR_OBJ, SCI_FILE_CONFIG_CMD_FC,   SCI_FILE_OBJ, SCI_FILE_ConfigCmd,  SCI_FILE_CONFIG_CMD_DATA_LEN);
      
-      CFE_MSG_Init(CFE_MSG_PTR(PlMgr.StatusTlm.TelemetryHeader), CFE_SB_ValueToMsgId(INITBL_GetIntConfig(INITBL_OBJ, CFG_TLM_MID)), sizeof(PL_MGR_StatusTlm_t));
+      CFE_MSG_Init(CFE_MSG_PTR(PlMgr.StatusTlm.TelemetryHeader), 
+                   CFE_SB_ValueToMsgId(INITBL_GetIntConfig(INITBL_OBJ, CFG_PL_MGR_STATUS_TLM_TOPICID)),
+                   sizeof(PL_MGR_StatusTlm_t));
 
       /*
       ** Application startup event message
